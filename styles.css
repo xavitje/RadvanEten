@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f2f2f2;
+}
+
+#wheel-container {
+    margin: 30px auto;
+    width: 400px;
+    height: 400px;
+    position: relative;
+}
+
+#spinBtn, #deleteBtn {
+    padding: 12px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+#result {
+    margin-top: 30px;
+}
