@@ -13,64 +13,68 @@ async function loadData() {
     drawWheel();
 }
 
+function getRandomColor() {
+    return `hsl(${Math.random() * 360}, 80%, 60%)`;
+}
+
 function drawWheel() {
     const arc = Math.PI * 2 / items.length;
 
-    ctx.clearRect(0, 0, 400, 400);
+    ctx.clearRect(0, 0, 450, 450);
 
     items.forEach((item, i) => {
         let angle = i * arc;
 
         ctx.beginPath();
-        ctx.fillStyle = i % 2 === 0 ? "#fcd34d" : "#fbbf24";
-        ctx.moveTo(200, 200);
-        ctx.arc(200, 200, 200, angle, angle + arc);
+        ctx.fillStyle = getRandomColor();
+        ctx.moveTo(225, 225);
+        ctx.arc(225, 225, 225, angle, angle + arc);
         ctx.fill();
 
         ctx.save();
-        ctx.translate(200, 200);
+        ctx.translate(225, 225);
         ctx.rotate(angle + arc / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#000";
-        ctx.font = "18px Arial";
-        ctx.fillText(item, 180, 10);
+        ctx.font = "20px Arial";
+        ctx.fillText(item, 200, 10);
         ctx.restore();
     });
 }
 
 function spinWheel() {
-    let extraTurns = Math.floor(Math.random() * 5 + 5); 
-    let degrees = extraTurns * 360 + Math.random() * 360;
-    let selectedIndex = Math.floor((items.length - (degrees % 360) / (360 / items.length)) % items.length);
+    const rotations = Math.floor(Math.random() * 3) + 5;
+    const finalRotation = Math.random() * 360;
+    const totalDegrees = rotations * 360 + finalRotation;
 
-    wheelCanvas.style.transition = "transform 4s cubic-bezier(.17,.67,.16,1)";
-    wheelCanvas.style.transform = `rotate(${degrees}deg)`;
+    const selectedIndex = Math.floor(
+        (items.length - (finalRotation % 360) / (360 / items.length)) % items.length
+    );
+
+    wheelCanvas.style.transform = `rotate(${totalDegrees}deg)`;
 
     setTimeout(() => {
-        resultBox.classList.remove("hidden");
         chosenText.textContent = items[selectedIndex];
+
+        chosenText.classList.add("glow");
+        resultBox.classList.remove("hidden");
+
         deleteBtn.onclick = () => deleteItem(selectedIndex);
-    }, 4100);
+
+    }, 4600);
 }
 
 function deleteItem(index) {
     items.splice(index, 1);
 
-    const newJson = JSON.stringify({ items: items }, null, 2);
+    alert("Item verwijderd! Vergeet niet dat je een server moet gebruiken om data.json echt op te slaan.");
 
-    fetch("data.json", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: newJson
-    }).catch(() => {
-        alert("Let op: Je browser staat bestandsschrijven lokaal niet toe.");
-    });
-
+    chosenText.classList.remove("glow");
     resultBox.classList.add("hidden");
+
     wheelCanvas.style.transform = "rotate(0deg)";
     drawWheel();
 }
 
 spinBtn.addEventListener("click", spinWheel);
-
 loadData();
